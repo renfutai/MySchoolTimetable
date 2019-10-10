@@ -6,9 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.lzy.okgo.OkGo;
+import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.Response;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class KeBiaoGridAdapter extends RecyclerView.Adapter<KeBiaoGridAdapter.LinearViewHolder> {
 
@@ -42,7 +50,27 @@ public class KeBiaoGridAdapter extends RecyclerView.Adapter<KeBiaoGridAdapter.Li
         }
         if (R.drawable.color_yuanhu_hui != color) {
             holder.itemView.setOnClickListener(view -> mListener.onClick(position));
+        } else {
+            holder.itemView.setOnClickListener(view -> myToast());
         }
+    }
+
+    private void myToast() {
+        OkGo.<String>get("https://v1.hitokoto.cn/")
+                .tag(this)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(Response<String> response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject((String) response.body());
+                            String s = jsonObject.optString("hitokoto");
+                            String s1 = jsonObject.optString("from");
+                            Toast.makeText(mContext, (s + "  ———— " + s1), Toast.LENGTH_LONG).show();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 
     @Override
