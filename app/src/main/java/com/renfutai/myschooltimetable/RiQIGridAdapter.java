@@ -1,11 +1,8 @@
 package com.renfutai.myschooltimetable;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.xmlpull.v1.XmlPullParser;
+import com.renfutai.myschooltimetable.Data.GetData;
 
 public class RiQIGridAdapter extends RecyclerView.Adapter<RiQIGridAdapter.LinearViewHolder> {
 

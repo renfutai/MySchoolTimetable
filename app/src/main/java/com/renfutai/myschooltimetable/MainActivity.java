@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.renfutai.myschooltimetable.Data.ElectiveSetting;
+import com.renfutai.myschooltimetable.Data.GetData;
 import com.renfutai.myschooltimetable.SetStatusBar.Set;
 
 public class MainActivity extends Activity {
@@ -19,12 +22,18 @@ public class MainActivity extends Activity {
     private TextView textView;
     private RecyclerView recyclerView;
     private RecyclerView recyclerView0;
+    private SharedPreferences sharedPreferences;
+    private ElectiveSetting electiveSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Set.set(MainActivity.this, R.color.colorWhite, true);
+        //获取SharedPreferences
+        sharedPreferences = getSharedPreferences("data", MODE_PRIVATE);
+        electiveSetting = new ElectiveSetting(sharedPreferences);
+
         setBiaoTi();
         setDaRiQi();
         setDaKeBiao();
@@ -51,7 +60,7 @@ public class MainActivity extends Activity {
         recyclerView.setLayoutManager(new GridLayoutManager(MainActivity.this, 5));
         recyclerView.addItemDecoration(new MyDecoration());
         recyclerView.setAdapter(new KeBiaoGridAdapter(MainActivity.this, pos ->
-                Toast.makeText(MainActivity.this, GetData.getdianji(pos), Toast.LENGTH_SHORT).show()
+                Toast.makeText(MainActivity.this, GetData.getdianji(pos), Toast.LENGTH_SHORT).show(),electiveSetting
         ));
     }
 

@@ -2,6 +2,7 @@ package com.renfutai.myschooltimetable;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.Response;
+import com.renfutai.myschooltimetable.Data.ElectiveSetting;
+import com.renfutai.myschooltimetable.Data.GetData;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,10 +27,12 @@ public class KeBiaoGridAdapter extends RecyclerView.Adapter<KeBiaoGridAdapter.Li
     private OnItemClickListener mListener;
     private int[] colors = GetRandomColor.Random();
     private int danshuangzhou = MyTime.getzhoushu() % 2;
+    private ElectiveSetting electiveSetting;
 
-    public KeBiaoGridAdapter(Context context, OnItemClickListener listener) {
+    public KeBiaoGridAdapter(Context context, OnItemClickListener listener, ElectiveSetting electiveSetting) {
         this.mContext = context;
         this.mListener = listener;
+        this.electiveSetting = electiveSetting;
     }
 
     @NonNull
@@ -41,18 +46,28 @@ public class KeBiaoGridAdapter extends RecyclerView.Adapter<KeBiaoGridAdapter.Li
     public void onBindViewHolder(@NonNull KeBiaoGridAdapter.LinearViewHolder holder, int position) {
         int color = colors[GetData.colorSettings[position]];
         holder.textView.setText(GetData.getzhuti(position));
-        holder.textView.setBackground(mContext.getDrawable(color));
+        if (electiveSetting.get(position)) {
+            holder.textView.setBackground(mContext.getDrawable(color));
+        } else {
+            //把下面的textview换成itemview会有蜜汁bug
+            holder.textView.setBackground(mContext.getDrawable(colors[0]));
+        }
         //设置透明度
         holder.textView.setAlpha(0.7f);
-        if (danshuangzhou == GetData.danshuangzhou[position]) {
-            holder.textView.setBackground(mContext.getDrawable(R.drawable.color_yuanhu_hui));
-            holder.textView.setTextColor(Color.WHITE);
+
+        //设置点击事件
+        //选修课的特殊考虑
+        if (position > 14 && R.drawable.color_yuanhu_hui != color) {
+            holder.textView.setOnClickListener(view -> {
+                electiveSetting.set(position);
+                this.notifyItemChanged(position);
+            });
+        } else if (R.drawable.color_yuanhu_hui != color) {
+            holder.textView.setOnClickListener(view -> mListener.onClick(position));
+        } else if (R.drawable.color_yuanhu_hui == color) {
+            holder.textView.setOnClickListener(view -> myToast());
         }
-        if (R.drawable.color_yuanhu_hui != color) {
-            holder.itemView.setOnClickListener(view -> mListener.onClick(position));
-        } else {
-            holder.itemView.setOnClickListener(view -> myToast());
-        }
+
     }
 
     private void myToast() {
