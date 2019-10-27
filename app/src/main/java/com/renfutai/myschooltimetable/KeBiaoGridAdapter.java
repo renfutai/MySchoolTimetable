@@ -46,11 +46,11 @@ public class KeBiaoGridAdapter extends RecyclerView.Adapter<KeBiaoGridAdapter.Li
     public void onBindViewHolder(@NonNull KeBiaoGridAdapter.LinearViewHolder holder, int position) {
         int color = colors[GetData.colorSettings[position]];
         holder.textView.setText(GetData.getzhuti(position));
-        if (electiveSetting.get(position)) {
-            holder.textView.setBackground(mContext.getDrawable(color));
+        if (danshuangzhou == GetData.danshuangzhou[position] || !(electiveSetting.get(position))) {
+            holder.textView.setBackground(mContext.getDrawable(R.drawable.color_yuanhu_hui));
+            holder.textView.setTextColor(Color.WHITE);
         } else {
-            //把下面的textview换成itemview会有蜜汁bug
-            holder.textView.setBackground(mContext.getDrawable(colors[0]));
+            holder.textView.setBackground(mContext.getDrawable(color));
         }
         //设置透明度
         holder.textView.setAlpha(0.7f);
